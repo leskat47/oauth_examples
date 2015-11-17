@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="google-signin-client_id" content="82710716223-oc9i2lb1o2ttovka73jblve3uknq4392.apps.googleusercontent.com">
+        <title>Daily to-do</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="static/styles.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+    </head>
+    <body>
+    <div class="container-fluid">
+        <h1>
+            An example of google sign in.
+        </h1>
+        <div class="g-signin2" data-onsuccess="onSignIn" id="signin"></div>
+        <a href="#" id="signout"><button class="btn">Sign out</button></a>
+
+        </div>
+    </div>
+
+    <script>
+    function onSignIn(googleUser) {
+      var profile = googleUser.getBasicProfile();
+      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+      console.log('Name: ' + profile.getName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail());
+
+
+      var id_token = googleUser.getAuthResponse().id_token;
+      console.log(id_token);
+      token_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token
+      
+      $.get(token_url, function(data) {
+        aud = {'aud': data["aud"]}
+        $.post("/tokencheck", 
+            aud, 
+            function(adata) {
+            console.log(adata)
+            });
+      });
+    }
+    document.getElementById("signout").addEventListener("click", signOut);
+
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+        });
+      }
+
+    </script>
+    </body>
+</html>
