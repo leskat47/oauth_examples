@@ -47,6 +47,9 @@
           }
         });
         FB.AppEvents.logPageView();
+        function myFacebookLogin() {
+          FB.login(function(){}, {scope: 'user_friends'});
+        }
       };
         // Load the SDK asynchronously
       (function(d, s, id){
@@ -77,6 +80,20 @@
         });
       }
 
+      // only available if friends have signed in and allowed access: 
+      // https://developers.facebook.com/docs/facebook-login/permissions/#reference-user_friends
+      function findFriends(){
+        url = "/" + FB.getUserID() + "/friends";
+        console.log(url);
+          FB.api(
+            url,
+            function (response) {
+              if (response && !response.error) {
+                console.log(response)
+              }
+            }
+          );
+      }
       function logout() {
         FB.logout(function(response) {
         // Person is now logged out
